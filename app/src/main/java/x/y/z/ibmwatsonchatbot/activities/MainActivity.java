@@ -105,21 +105,4 @@ public class MainActivity extends Activity {
     }
 
 
-
-//    public static class STTCommands extends AsyncTask<Void, Void, JSONObject> {
-//
-//        public JSONObject doInBackground(Void... none) {
-//
-//            return SpeechToText.sharedInstance().getModels();
-//        }
-//    }
-
-//    public static class TTSCommands extends AsyncTask<Void, Void, JSONObject> {
-//
-//        public JSONObject doInBackground(Void... none) {
-//
-//            return TextToSpeech.sharedInstance().getVoices();
-//        }
-//    }
-
 }
