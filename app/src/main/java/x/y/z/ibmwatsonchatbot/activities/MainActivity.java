@@ -1,4 +1,4 @@
-package x.y.z.ibmwatsonchatbot;
+package x.y.z.ibmwatsonchatbot.activities;
 
 
 import android.app.ActionBar;
@@ -47,6 +47,9 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Vector;
+
+import x.y.z.ibmwatsonchatbot.CustomTypefaceSpan;
+import x.y.z.ibmwatsonchatbot.R;
 
 // IBM Watson SDK
 
