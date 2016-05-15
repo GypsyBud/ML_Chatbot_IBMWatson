@@ -93,6 +93,43 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    public void playTTS(View view) throws JSONException {
+
+        TextToSpeech.sharedInstance().setVoice(fragmentTabTTS.getSelectedVoice());
+        Log.d(TAG, fragmentTabTTS.getSelectedVoice());
+
+        //Get text from text box
+        textTTS = (TextView)fragmentTabTTS.mView.findViewById(R.id.prompt);
+        String ttsText=textTTS.getText().toString();
+        Log.d(TAG, ttsText);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(textTTS.getWindowToken(),
+                                    InputMethodManager.HIDE_NOT_ALWAYS);
+
+        //Call the sdk function
+        TextToSpeech.sharedInstance().synthesize(ttsText);
+    }
+
+    public class MyTabListener implements ActionBar.TabListener {
+
+        Fragment fragment;
+        public MyTabListener(Fragment fragment) {
+            this.fragment = fragment;
+        }
+
+        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+            ft.replace(R.id.fragment_container, fragment);
+        }
+
+        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+            ft.remove(fragment);
+        }
+
+        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+            // nothing done here
+        }
+    }
+
 
     public static class FragmentTabSTT extends Fragment implements ISpeechDelegate {
 
@@ -647,27 +684,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    public class MyTabListener implements ActionBar.TabListener {
-
-        Fragment fragment;
-        public MyTabListener(Fragment fragment) {
-            this.fragment = fragment;
-        }
-
-        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-            ft.replace(R.id.fragment_container, fragment);
-        }
-
-        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-            ft.remove(fragment);
-        }
-
-        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-            // nothing done here
-        }
-    }
-
-
     public static class STTCommands extends AsyncTask<Void, Void, JSONObject> {
 
         protected JSONObject doInBackground(Void... none) {
@@ -716,25 +732,4 @@ public class MainActivity extends Activity {
         }
     }
 
-    /**
-     * Play TTS Audio data
-     *
-     * @param view
-     */
-    public void playTTS(View view) throws JSONException {
-
-        TextToSpeech.sharedInstance().setVoice(fragmentTabTTS.getSelectedVoice());
-        Log.d(TAG, fragmentTabTTS.getSelectedVoice());
-
-        //Get text from text box
-        textTTS = (TextView)fragmentTabTTS.mView.findViewById(R.id.prompt);
-        String ttsText=textTTS.getText().toString();
-        Log.d(TAG, ttsText);
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(textTTS.getWindowToken(),
-                                    InputMethodManager.HIDE_NOT_ALWAYS);
-
-        //Call the sdk function
-        TextToSpeech.sharedInstance().synthesize(ttsText);
-    }
 }
