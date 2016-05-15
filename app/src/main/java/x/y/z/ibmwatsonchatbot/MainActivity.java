@@ -60,6 +60,40 @@ public class MainActivity extends Activity {
     FragmentTabSTT fragmentTabSTT = new FragmentTabSTT();
     FragmentTabTTS fragmentTabTTS = new FragmentTabTTS();
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // Strictmode needed to run the http/wss request for devices > Gingerbread
+        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.GINGERBREAD) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
+        setContentView(R.layout.activity_tab_text);
+
+        ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        tabSTT = actionBar.newTab().setText("Speech to Text");
+        tabTTS = actionBar.newTab().setText("Text to Speech");
+
+        tabSTT.setTabListener(new MyTabListener(fragmentTabSTT));
+        tabTTS.setTabListener(new MyTabListener(fragmentTabTTS));
+
+        actionBar.addTab(tabSTT);
+        actionBar.addTab(tabTTS);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+
     public static class FragmentTabSTT extends Fragment implements ISpeechDelegate {
 
         // session recognition results
@@ -650,34 +684,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        // Strictmode needed to run the http/wss request for devices > Gingerbread
-        if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.GINGERBREAD) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
-
-        //setContentView(R.layout.activity_main);
-        setContentView(R.layout.activity_tab_text);
-
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        tabSTT = actionBar.newTab().setText("Speech to Text");
-        tabTTS = actionBar.newTab().setText("Text to Speech");
-
-        tabSTT.setTabListener(new MyTabListener(fragmentTabSTT));
-        tabTTS.setTabListener(new MyTabListener(fragmentTabTTS));
-
-        actionBar.addTab(tabSTT);
-        actionBar.addTab(tabTTS);
-
-        //actionBar.setStackedBackgroundDrawable(new ColorDrawable(Color.parseColor("#B5C0D0")));
-    }
 
     static class MyTokenProvider implements TokenProvider {
 
@@ -707,12 +714,6 @@ public class MainActivity extends Activity {
                 return null;
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 
     /**
