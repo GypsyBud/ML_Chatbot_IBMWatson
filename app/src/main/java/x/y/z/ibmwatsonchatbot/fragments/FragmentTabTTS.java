@@ -23,12 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import x.y.z.ibmwatsonchatbot.CustomTypefaceSpan;
 import x.y.z.ibmwatsonchatbot.R;
 import x.y.z.ibmwatsonchatbot.providers.MyTokenProvider;
+import x.y.z.ibmwatsonchatbot.util.ChatHelper;
 
 public class FragmentTabTTS extends Fragment
 {
@@ -38,6 +36,8 @@ public class FragmentTabTTS extends Fragment
     public Context mContext = null;
     public JSONObject jsonVoices = null;
     private Handler mHandler = null;
+
+    TextView textTTS;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -90,15 +90,6 @@ public class FragmentTabTTS extends Fragment
         return mView;
     }
 
-    public URI getHost(String url){
-        try {
-            return new URI(url);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     private boolean initTTS() {
 
         // DISCLAIMER: please enter your credentials or token factory in the lines below
@@ -108,7 +99,7 @@ public class FragmentTabTTS extends Fragment
         String tokenFactoryURL = "https://stream.watsonplatform.net/text-to-speech/api";
         String serviceURL = "https://stream.watsonplatform.net/text-to-speech/api";
 
-        TextToSpeech.sharedInstance().initWithContext(this.getHost(serviceURL));
+        TextToSpeech.sharedInstance().initWithContext(ChatHelper.getHost(serviceURL));
 
         // token factory is the preferred authentication method (service credentials are not distributed in the client app)
         if (tokenFactoryURL.equals(tokenFactoryURL) == false) {

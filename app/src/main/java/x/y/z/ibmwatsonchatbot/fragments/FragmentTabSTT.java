@@ -26,13 +26,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Vector;
 
 import x.y.z.ibmwatsonchatbot.CustomTypefaceSpan;
 import x.y.z.ibmwatsonchatbot.R;
 import x.y.z.ibmwatsonchatbot.providers.MyTokenProvider;
+import x.y.z.ibmwatsonchatbot.util.ChatHelper;
 
 public class FragmentTabSTT extends Fragment implements ISpeechDelegate
 {
@@ -73,8 +72,6 @@ public class FragmentTabSTT extends Fragment implements ISpeechDelegate
         }
         addItemsOnSpinnerModels();
 
-        displayStatus("please, press the button to start speaking");
-
         Button buttonRecord = (Button)mView.findViewById(R.id.buttonRecord);
         buttonRecord.setOnClickListener(new View.OnClickListener() {
 
@@ -90,7 +87,6 @@ public class FragmentTabSTT extends Fragment implements ISpeechDelegate
                     displayResult(mRecognitionResults);
                     ItemModel item = (ItemModel)spinner.getSelectedItem();
                     SpeechToText.sharedInstance().setModel(item.getModelName());
-                    displayStatus("connecting to the STT service...");
                     // start recognition
                     new AsyncTask<Void, Void, Void>(){
                         @Override
@@ -123,15 +119,6 @@ public class FragmentTabSTT extends Fragment implements ISpeechDelegate
         return item.getModelName();
     }
 
-    public URI getHost(String url){
-        try {
-            return new URI(url);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     // initialize the connection to the Watson STT service
     private boolean initSTT() {
 
@@ -143,9 +130,8 @@ public class FragmentTabSTT extends Fragment implements ISpeechDelegate
         String serviceURL = "wss://stream.watsonplatform.net/speech-to-text/api";
 
         SpeechConfiguration sConfig = new SpeechConfiguration(SpeechConfiguration.AUDIO_FORMAT_OGGOPUS);
-        //SpeechConfiguration sConfig = new SpeechConfiguration(SpeechConfiguration.AUDIO_FORMAT_DEFAULT);
 
-        SpeechToText.sharedInstance().initWithContext(this.getHost(serviceURL), getActivity().getApplicationContext(), sConfig);
+        SpeechToText.sharedInstance().initWithContext(ChatHelper.getHost(serviceURL), getActivity().getApplicationContext(), sConfig);
 
         // token factory is the preferred authentication method (service credentials are not distributed in the client app)
         if (tokenFactoryURL.equals(tokenFactoryURL) == false) {
@@ -269,21 +255,6 @@ public class FragmentTabSTT extends Fragment implements ISpeechDelegate
         }.start();
     }
 
-    public void displayStatus(final String status) {
-            /*final Runnable runnableUi = new Runnable(){
-                @Override
-                public void run() {
-                    TextView textResult = (TextView)mView.findViewById(R.id.sttStatus);
-                    textResult.setText(status);
-                }
-            };
-            new Thread(){
-                public void run(){
-                    mHandler.post(runnableUi);
-                }
-            }.start();*/
-    }
-
     /**
      * Change the button's label
      */
@@ -326,7 +297,6 @@ public class FragmentTabSTT extends Fragment implements ISpeechDelegate
 
     public void onOpen() {
         Log.d(TAG, "onOpen");
-        displayStatus("successfully connected to the STT service");
         setButtonLabel(R.id.buttonRecord, "Stop recording");
         mState = ConnectionState.CONNECTED;
     }
@@ -340,7 +310,6 @@ public class FragmentTabSTT extends Fragment implements ISpeechDelegate
 
     public void onClose(int code, String reason, boolean remote) {
         Log.d(TAG, "onClose, code: " + code + " reason: " + reason);
-        displayStatus("connection closed");
         setButtonLabel(R.id.buttonRecord, "Record");
         mState = ConnectionState.IDLE;
     }

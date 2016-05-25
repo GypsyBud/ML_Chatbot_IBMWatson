@@ -15,7 +15,7 @@
         android:background="@drawable/microphone"/>
 
     <TextView
-        android:id="@+id/etText"
+        android:id="@+id/processedText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
